@@ -5,13 +5,26 @@ import {
   screen,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
+import { delay, http, HttpResponse } from "msw";
 import ProductList from "../../src/components/ProductList";
-import { http, HttpResponse, delay } from "msw";
 import { server } from "../mocks/server";
+import AllProvider from "./../AllProvider";
 
 describe("ProductList", () => {
+  // const renderComponent = () => {
+  //   const client = new QueryClient({
+  //     defaultOptions: { queries: { retry: false } },
+  //   });
+
+  //   render(
+  //     <QueryClientProvider client={client}>
+  //       <ProductList />
+  //     </QueryClientProvider>
+  //   );
+  // };
+
   it("should render the list of products", async () => {
-    render(<ProductList />);
+    render(<ProductList />, { wrapper: AllProvider });
 
     const items = await screen.findAllByRole("listitem");
     expect(items.length).toBeGreaterThan(0);
@@ -20,11 +33,11 @@ describe("ProductList", () => {
   it("should render no product found when the list is empty", async () => {
     server.use(
       http.get("/products", () => {
-        return HttpResponse.json([]);
+        return HttpResponse.json([]); 
       })
     );
 
-    render(<ProductList />);
+    render(<ProductList />, { wrapper: AllProvider });
 
     const message = await screen.findByText(/no products/i);
 
@@ -38,7 +51,7 @@ describe("ProductList", () => {
       })
     );
 
-    render(<ProductList />);
+    render(<ProductList />, { wrapper: AllProvider });
 
     const message = await screen.findByText(/error/i);
 
@@ -53,7 +66,7 @@ describe("ProductList", () => {
       })
     );
 
-    render(<ProductList />);
+    render(<ProductList />, { wrapper: AllProvider });
 
     const message = await screen.findByText(/loading/i);
 
@@ -61,7 +74,7 @@ describe("ProductList", () => {
   });
 
   it("should remove loading after data is fetched", async () => {
-    render(<ProductList />);
+    render(<ProductList />, { wrapper: AllProvider });
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
@@ -73,7 +86,7 @@ describe("ProductList", () => {
       })
     );
 
-    render(<ProductList />);
+    render(<ProductList />, { wrapper: AllProvider });
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });

@@ -4,16 +4,16 @@ import ProductDetail from "./../../src/components/ProductDetail";
 import { products } from "./../mocks/data";
 import { server } from "../mocks/server";
 import { http, HttpResponse } from "msw";
+import AllProvider from "./../AllProvider";
 
 describe("ProductDetail", () => {
   it("should render the product details", async () => {
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProvider });
 
     const name = await screen.findByText(new RegExp(products[0].name));
     const price = await screen.findByText(
       new RegExp(products[0].price.toString())
     );
-
     expect(name).toBeInTheDocument();
     expect(price).toBeInTheDocument();
   });
@@ -21,14 +21,14 @@ describe("ProductDetail", () => {
   it("should render message if not found", async () => {
     server.use(http.get("products/1", () => HttpResponse.json(null)));
 
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProvider });
 
     const message = await screen.findByText(/not found/i);
 
     expect(message).toBeInTheDocument();
   });
   it("should render an error for invalid productId", async () => {
-    render(<ProductDetail productId={0} />);
+    render(<ProductDetail productId={0} />, { wrapper: AllProvider });
 
     const message = await screen.findByText(/invalid/i);
 
