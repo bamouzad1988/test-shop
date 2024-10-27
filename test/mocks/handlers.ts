@@ -1,13 +1,9 @@
 import { http, HttpResponse } from "msw";
-import { products } from "./data";
+import { products, categories } from "./data";
 
 export const handlers = [
   http.get("/categories", () => {
-    return HttpResponse.json([
-      { id: 1, name: "bijan" },
-      { id: 2, name: "reza" },
-      { id: 3, name: "arad" },
-    ]);
+    return HttpResponse.json(categories);
   }),
 
   http.get("/products", () => {

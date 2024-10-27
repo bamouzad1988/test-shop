@@ -8,7 +8,7 @@ import AllProvider from "./../AllProvider";
 
 describe("ProductDetail", () => {
   it("should render the product details", async () => {
-    render(<ProductDetail productId={1} />, { wrapper: AllProvider });
+    render(<ProductDetail productId={1} />);
 
     const name = await screen.findByText(new RegExp(products[0].name));
     const price = await screen.findByText(
@@ -21,14 +21,24 @@ describe("ProductDetail", () => {
   it("should render message if not found", async () => {
     server.use(http.get("products/1", () => HttpResponse.json(null)));
 
-    render(<ProductDetail productId={1} />, { wrapper: AllProvider });
+    render(<ProductDetail productId={1} />);
 
     const message = await screen.findByText(/not found/i);
 
     expect(message).toBeInTheDocument();
   });
+  it("should render error when network has peoblem", async () => {
+    server.use(http.get("products/1", () => HttpResponse.error()));
+
+    render(<ProductDetail productId={1} />);
+
+    const message = await screen.findByText(/error/i);
+
+    expect(message).toBeInTheDocument();
+  });
+
   it("should render an error for invalid productId", async () => {
-    render(<ProductDetail productId={0} />, { wrapper: AllProvider });
+    render(<ProductDetail productId={0} />);
 
     const message = await screen.findByText(/invalid/i);
 
