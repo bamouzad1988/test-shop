@@ -1,6 +1,7 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import ProductList from "../src/components/ProductList";
+import { CartProvider } from "../src/providers/CartProvider";
 
 const AllProvider = () => {
   const client = new QueryClient({
@@ -9,7 +10,9 @@ const AllProvider = () => {
 
   return (
     <QueryClientProvider client={client}>
-      <ProductList />
+      <CartProvider>
+        <ProductList />
+      </CartProvider>
     </QueryClientProvider>
   );
 };
