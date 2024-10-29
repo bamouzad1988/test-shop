@@ -34,6 +34,7 @@ const ProductForm = ({ product, onSubmit }: Props) => {
 
   return (
     <form
+      role="form"
       name="product"
       onSubmit={handleSubmit(async (formData) => {
         try {
@@ -75,7 +76,7 @@ const ProductForm = ({ product, onSubmit }: Props) => {
               defaultValue={product?.categoryId.toString() || ""}
               onValueChange={(value) => field.onChange(+value)}
             >
-              <Select.Trigger placeholder="Category" />
+              <Select.Trigger placeholder="Category" aria-label="Placeholder" />
               <Select.Content>
                 <Select.Group>
                   {categories?.map((category) => (

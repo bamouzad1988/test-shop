@@ -1,18 +1,25 @@
 import React from "react";
+import { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import ProductList from "../src/components/ProductList";
 import { CartProvider } from "../src/providers/CartProvider";
+import { Theme } from "@radix-ui/themes";
 
-const AllProvider = () => {
+const AllProviders = ({ children }: PropsWithChildren) => {
   const client = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
   });
 
   return (
     <QueryClientProvider client={client}>
-      <ProductList />
+      <CartProvider>
+        <Theme>{children}</Theme>
+      </CartProvider>
     </QueryClientProvider>
   );
 };
 
-export default AllProvider;
+export default AllProviders;

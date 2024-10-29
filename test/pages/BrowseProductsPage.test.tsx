@@ -143,7 +143,7 @@ describe("BrowseProductsPage", () => {
 
     products.forEach((product) => {
       const productName = screen.queryByText(product.name);
-      
+
       expect(productName).toBeInTheDocument();
     });
   });
