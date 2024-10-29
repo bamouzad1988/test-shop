@@ -10,13 +10,17 @@ import { delay, http, HttpResponse } from "msw";
 import { Theme } from "@radix-ui/themes";
 import BrowseProducts from "./../../src/pages/BrowseProductsPage";
 import { userEvent } from "@testing-library/user-event";
+import { CartProvider } from "../../src/providers/CartProvider";
+import { categories, products } from "../mocks/data";
 
 describe("BrowseProductsPage", () => {
   const renderComponent = () => {
     render(
-      <Theme>
-        <BrowseProducts />
-      </Theme>
+      <CartProvider>
+        <Theme>
+          <BrowseProducts />
+        </Theme>
+      </CartProvider>
     );
   };
 
@@ -99,19 +103,48 @@ describe("BrowseProductsPage", () => {
     server.use(
       http.get("/categories", async () => {
         await delay();
-        return HttpResponse.json();
+        return HttpResponse.json([]);
       })
     );
 
     renderComponent();
 
     const combobox = await screen.findByRole("combobox");
-    expect(combobox).toBeInTheDocument();
 
     const user = userEvent.setup();
     await user.click(combobox);
 
-    const options = await screen.findAllByRole("option");
-    expect(options.length).toBeGreaterThan(0);
+    expect(combobox).toBeInTheDocument();
+
+    const all = screen.getByRole("option", { name: /all/i });
+    expect(all).toBeInTheDocument();
+
+    categories.forEach(async (category) => {
+      const option = await screen.findAllByRole("option", {
+        name: category.name,
+      });
+      expect(option).toBeInTheDocument();
+    });
+  });
+
+  it("should render products", async () => {
+    server.use(
+      http.get("/products", async () => {
+        await delay();
+        return HttpResponse.json(products);
+      })
+    );
+
+    renderComponent();
+
+    await waitForElementToBeRemoved(() =>
+      screen.getByRole("progressbar", { name: /products/i })
+    );
+
+    products.forEach((product) => {
+      const productName = screen.queryByText(product.name);
+      
+      expect(productName).toBeInTheDocument();
+    });
   });
 });

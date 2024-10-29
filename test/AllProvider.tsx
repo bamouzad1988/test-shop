@@ -10,9 +10,7 @@ const AllProvider = () => {
 
   return (
     <QueryClientProvider client={client}>
-      <CartProvider>
-        <ProductList />
-      </CartProvider>
+      <ProductList />
     </QueryClientProvider>
   );
 };
